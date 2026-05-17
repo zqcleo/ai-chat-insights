@@ -1,7 +1,7 @@
 # AI 使用复盘 · ai-chat-insights
 
 > 读你和大模型的对话，生成本地复盘报告：**通过各平台官方 web API 拉对话历史（带浏览器现有 cookie）→ 本地算 KPI / 活跃节奏 / 数据彩蛋 → 调 LLM 出 4 段式洞察 → 渲染成 HTML**。  
-> 浏览器扩展，0 终端、0 Python，装完即用。全程数据在本地，LLM 调用直连，不经任何中转服务器。
+> 浏览器扩展，0 终端、0 Python，装完即用。全程数据在本地，LLM 调用直连。
 
 ![license: MIT](https://img.shields.io/badge/license-MIT-blue)
 ![manifest: v3](https://img.shields.io/badge/manifest-v3-green)
