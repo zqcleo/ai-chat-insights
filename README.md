@@ -49,7 +49,7 @@
 
 ### A. 加载本地源码（推荐，5 分钟）
 
-1. 下载或 `git clone https://github.com/qichuan-zqc/ai-chat-insights.git`
+1. 下载或 `git clone https://github.com/zqcleo/ai-chat-insights.git`
 2. 打开 chrome 地址栏输入 `chrome://extensions/` 回车
 3. 右上角打开「**开发者模式**」开关
 4. 点「**加载已解压的扩展程序**」，选刚才下载的 `ai-chat-insights` 文件夹

@@ -3,7 +3,7 @@
   "name": "AI 使用复盘",
   "version": "1.0.0",
   "description": "读你和大模型的对话，生成复盘报告。本地跑，cookie 不外发。",
-  "author": "qichuan-zqc",
+  "author": "zqcleo",
   "icons": {
     "16": "icons/16.png",
     "48": "icons/48.png",
