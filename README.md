@@ -29,7 +29,21 @@
 
 ## 截图
 
-> _TODO：补 3-5 张报告截图（弹窗 / 活跃节奏 / 数据彩蛋 / 深度洞察 / 设置页）_
+报告顶部 · 速读卡 + KPI + 平台对比
+
+![overview](docs/01-overview.png)
+
+时段热力图 + 平台分布 + 数据里的彩蛋
+
+![heatmap & anomalies](docs/02-heatmap-and-anomalies.png)
+
+你的使用画像 + 主题归类（LLM 生成）
+
+![narrative & topics](docs/03-narrative-and-topics.png)
+
+结尾 · 一句话总结
+
+![fun ending](docs/04-fun-ending.png)
 
 ## 安装
 
