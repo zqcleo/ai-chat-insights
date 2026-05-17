@@ -81,29 +81,6 @@ Base URL 包含 `anthropic.com` 自动走 Claude 协议，否则走 OpenAI 兼�
 
 清空：扩展选项页底部「清空全部（含 LLM 配置）」一键擦。
 
-## 已知限制
-
-- **Service Worker 30s 限制**：抓取期间 popup 不能关。后续可能用 `chrome.offscreen` API 改造
-- **Cookie 30 天过期**：4 平台都是。失效后扩展提示「未登录」，去对应网站重登一次即可
-- **元宝消息上限**：服务端单次最多返 60 条/对话，本扩展用 cursor 翻页能拿全（包括 200+ 条的长对话）
-- **千问事件去重**：千问一个 turn 返回多个事件片段（思考/搜索/正文），按 req_id 去重保留 response 最长那条
-
-## 加新平台
-
-1. HAR 抓包对应平台的 list / detail API
-2. 新建 `lib/<platform>-api.js`，参考现有 4 个最相近的（cookie 鉴权抄 yuanbao / cursor 翻页抄 yuanbao / bearer 抄 deepseek / 事件去重抄 qianwen）
-3. 新建 `content-<platform>.js` 代理跨域 fetch
-4. `manifest.json` 加 host_permissions + content_scripts
-5. `popup.html` + `viewer.js` + `lib/detect.js` 各加一行注册
-
-## 路线图
-
-详见 [todo.md（在原项目）](https://github.com/qichuan-zqc/doubao-insights/blob/main/todo.md)。
-
-下一步重点：
-- 时段聚焦（让用户选「最近 30 天」生成报告）
-- 报告 diff 模式（本月 vs 上月对比）
-
 ## License
 
 MIT，见 [LICENSE](./LICENSE)。
