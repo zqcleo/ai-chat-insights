@@ -1,7 +1,7 @@
 # AI 使用复盘 · ai-chat-insights
 
-> 读你和大模型的对话，生成本地复盘报告。  
-> 浏览器扩展，0 终端、0 Python，装完即用。
+> 读你和大模型的对话，生成本地复盘报告：**通过各平台官方 web API 拉对话历史（带浏览器现有 cookie）→ 本地算 KPI / 活跃节奏 / 数据彩蛋 → 调 LLM 出 4 段式洞察 → 渲染成 HTML**。  
+> 浏览器扩展，0 终端、0 Python，装完即用。全程数据在本地，LLM 调用直连，不经任何中转服务器。
 
 ![license: MIT](https://img.shields.io/badge/license-MIT-blue)
 ![manifest: v3](https://img.shields.io/badge/manifest-v3-green)
@@ -68,19 +68,6 @@
 5. 等几十秒到几分钟，报告在新 tab 自动打开
 
 后续生成是**增量更新** —— 缓存里已抓的对话不会重抓，只拉新对话和有更新的，通常 5-10 秒能出新报告。
-
-## 报告怎么生成的
-
-整个流程**纯客户端**，扩展没有任何后端服务器：
-
-1. **检测登录态** —— 用 `chrome.cookies` API 看 4 平台 cookie 是否在（只看存在性，不读 cookie 内容）
-2. **拉对话历史** —— 通过 content script 代理 fetch，**用你浏览器的 cookie 调各平台官方 API**（豆包/元宝/千问/DeepSeek 自家的 web API，不经过任何第三方）
-3. **增量缓存** —— 抓回的对话存进 `chrome.storage.local`，下次只拉新对话和有更新的
-4. **算统计指标** —— KPI / 90 天时间线 / 24×7 热力图 / 主题聚类 / 数据彩蛋 **全在浏览器本地算**
-5. **LLM 出洞察** —— 把对话样本（每对话采样 5 条）+ 统计数据喂给 LLM（默认 DeepSeek），返回 4 段式洞察 JSON
-6. **渲染报告** —— 数据 + LLM 输出注入 HTML 模板，在新 tab 打开
-
-LLM 是**唯一**走出浏览器的数据流向，调用是浏览器 → LLM API 直连。
 
 ## LLM 配置
 
