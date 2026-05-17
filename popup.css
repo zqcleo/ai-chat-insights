@@ -1,0 +1,145 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif;
+  width: 340px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.wrap { padding: 16px; }
+
+header h1 { font-size: 16px; font-weight: 700; color: #0f172a; letter-spacing: -0.2px; }
+.subtitle { color: #64748b; font-size: 11px; margin-top: 3px; }
+
+.platforms {
+  margin-top: 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+.plat-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 8px;
+}
+.plat-row + .plat-row { border-top: 1px solid #f1f5f9; }
+.plat-row .dot {
+  width: 8px; height: 8px;
+  background: #2563eb;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.plat-row .name { flex: 1; font-weight: 500; color: #0f172a; font-size: 13px; }
+.plat-row .name .domain {
+  color: #94a3b8; font-weight: 400; font-size: 11px; margin-left: 4px;
+}
+.plat-row .status { font-size: 11px; color: #64748b; }
+.plat-row .override { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.plat-row .override input { cursor: pointer; margin: 0; }
+.hint { font-size: 11px; color: #94a3b8; margin-top: 8px; padding: 0 4px; line-height: 1.4; text-align: center; }
+.link-sm { display: block; text-align: center; font-size: 11px; color: #64748b; text-decoration: none; margin-top: 8px; }
+.link-sm:hover { color: #2563eb; text-decoration: underline; }
+.diag { margin-top: 8px; padding: 10px 12px; background: #fef3c7; border: 1px solid #fbbf24; border-radius: 6px; font-size: 11px; max-height: 200px; overflow: auto; color: #78350f; }
+.diag pre { font-family: SF Mono, Menlo, monospace; white-space: pre-wrap; }
+.plat-row.ok .status { color: #16a34a; }
+.plat-row.fail .status { color: #dc2626; }
+.plat-row.skipped .status { color: #94a3b8; }
+.plat-row.skipped .name { color: #94a3b8; }
+
+button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+button:disabled { cursor: not-allowed; opacity: 0.5; }
+
+button.primary {
+  background: #2563eb;
+  color: #fff;
+}
+button.primary:not(:disabled):hover { background: #1d4ed8; }
+
+button.secondary {
+  background: #fff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+button.secondary:hover { background: #eff6ff; }
+
+.progress { margin-top: 12px; }
+.progress .bar {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress .fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #7c3aed);
+  width: 0%;
+  transition: width 0.3s;
+}
+.progress .text {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.model-filter {
+  margin-top: 10px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+.mf-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #64748b;
+  cursor: pointer;
+  user-select: none;
+}
+.mf-header .mf-title { flex: 1; font-weight: 600; color: #475569; }
+.mf-header a { color: #2563eb; text-decoration: none; font-size: 11px; }
+.mf-header .mf-caret { transition: transform 0.15s; }
+.model-filter.collapsed .mf-caret { transform: rotate(-90deg); }
+.model-filter.collapsed .mf-list { display: none; }
+.mf-list { padding: 4px 12px 10px; max-height: 240px; overflow: auto; }
+.mf-platform { margin-top: 8px; }
+.mf-platform:first-child { margin-top: 4px; }
+.mf-platform-header {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 4px;
+}
+.mf-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.mf-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: #334155; cursor: pointer;
+  padding: 3px 0 3px 14px;
+}
+.mf-item input { cursor: pointer; margin: 0; }
+.mf-item .mf-count { margin-left: auto; color: #94a3b8; font-size: 10px; }
+
+.footer {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 11px;
+  color: #94a3b8;
+}
+.footer a {
+  color: #64748b;
+  text-decoration: none;
+}
+.footer a:hover { color: #2563eb; }
+.footer .dot-sep { margin: 0 6px; }

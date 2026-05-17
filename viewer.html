@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>AI 助手使用复盘 · ai-insights</title>
+<!-- Inter 字体走系统 fallback：MV3 CSP 默认不让远程加载 -->
+
+<script src="vendor/echarts.min.js"></script>
+
+<style>
+  :root {
+    --ink: #0f172a;
+    --ink-soft: #334155;
+    --gray: #64748b;
+    --gray-soft: #94a3b8;
+    --line: #e2e8f0;
+    --bg: #f8fafc;
+    --bg-card: #ffffff;
+    --primary: #2563eb;
+    --good: #16a34a;
+    --good-bg: #f0fdf4;
+    --good-border: #bbf7d0;
+    --good-ink: #166534;
+    --warn: #dc2626;
+    --warn-bg: #fef2f2;
+    --warn-border: #fca5a5;
+    --warn-ink: #991b1b;
+    --tip: #2563eb;
+    --tip-bg: #eff6ff;
+    --tip-border: #bfdbfe;
+    --tip-ink: #1e40af;
+    --horizon: #7c3aed;
+    --horizon-bg: #faf5ff;
+    --horizon-border: #c4b5fd;
+    --horizon-ink: #5b21b6;
+    --glance-bg: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    --glance-border: #f59e0b;
+    --glance-ink: #78350f;
+    --glance-title: #92400e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--ink-soft);
+    line-height: 1.65;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 48px 24px 80px; }
+  header { margin-bottom: 24px; }
+  h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; color: var(--ink); }
+  .subtitle { color: var(--gray); font-size: 14px; margin-top: 6px; }
+
+  /* At a Glance card */
+  .glance {
+    background: var(--glance-bg);
+    border: 1px solid var(--glance-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .glance-title { font-size: 16px; font-weight: 700; color: var(--glance-title); margin-bottom: 16px; }
+  .glance-sections { display: flex; flex-direction: column; gap: 12px; }
+  .glance-section { font-size: 14px; color: var(--glance-ink); line-height: 1.65; }
+  .glance-section strong { color: var(--glance-title); font-weight: 700; }
+  .see-more { color: #b45309; text-decoration: none; font-size: 13px; white-space: nowrap; margin-left: 4px; }
+  .see-more:hover { text-decoration: underline; }
+
+  /* TOC nav */
+  .nav-toc {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 0 0 32px 0; padding: 14px 16px;
+    background: var(--bg-card); border-radius: 8px; border: 1px solid var(--line);
+  }
+  .nav-toc a {
+    font-size: 12px; color: var(--gray); text-decoration: none;
+    padding: 6px 12px; border-radius: 6px; background: #f1f5f9;
+    transition: all 0.15s;
+  }
+  .nav-toc a:hover { background: var(--line); color: var(--ink-soft); }
+
+  /* Stats row */
+  .stats-row {
+    display: flex; gap: 32px; flex-wrap: wrap;
+    margin-bottom: 28px; padding: 20px 0;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  }
+  .stat { text-align: center; min-width: 90px; }
+  .stat-value { font-size: 22px; font-weight: 700; color: var(--ink); line-height: 1.1; }
+  .stat-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+  /* Platform mini cards */
+  .platform-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .platform-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    border-left: 4px solid var(--platform-color, var(--primary));
+  }
+  .platform-card .name {
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .platform-card .stats {
+    color: var(--gray); font-size: 12px; line-height: 1.65;
+  }
+  .platform-card .stats strong { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Section */
+  section { margin-bottom: 40px; }
+  h2 {
+    font-size: 20px; font-weight: 700; color: var(--ink);
+    margin: 0 0 6px; letter-spacing: -0.2px;
+  }
+  .section-intro { font-size: 13px; color: var(--gray); margin-bottom: 16px; }
+
+  /* Narrative */
+  .narrative-card {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 8px; padding: 18px 20px;
+  }
+  .narrative-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.75; margin-bottom: 10px; }
+  .narrative-card p:last-of-type { margin-bottom: 0; }
+  .narrative-card strong { color: var(--ink); font-weight: 600; }
+  .key-insight {
+    background: var(--good-bg); border: 1px solid var(--good-border);
+    border-radius: 6px; padding: 10px 14px; margin-top: 14px;
+    font-size: 14px; color: var(--good-ink);
+  }
+  .key-insight strong { color: var(--good-ink); font-weight: 700; }
+
+  /* Anomaly highlights */
+  .anomaly-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .anomaly-card {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 8px; padding: 12px 14px;
+    border-top: 3px solid var(--anomaly-color, #94a3b8);
+  }
+  .anomaly-head { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .anomaly-emoji { font-size: 14px; }
+  .anomaly-value { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 4px; line-height: 1.4; }
+  .anomaly-hint { font-size: 12px; color: var(--gray); line-height: 1.45; }
+
+  /* Multimodal stats row */
+  .mm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .mm-card {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .mm-title { font-size: 12px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .mm-bars { display: flex; flex-direction: column; gap: 6px; }
+  .mm-bar-row { display: flex; align-items: center; }
+  .mm-bar-label { width: 70px; font-size: 12px; color: var(--ink-soft); flex-shrink: 0; }
+  .mm-bar-track { flex: 1; height: 8px; background: #f1f5f9; border-radius: 3px; margin: 0 8px; }
+  .mm-bar-fill { height: 100%; border-radius: 3px; }
+  .mm-bar-value { width: 70px; font-size: 12px; color: var(--gray); text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* Feature-to-try cards */
+  .feature-card {
+    background: #ffffff; border: 1px solid var(--line);
+    border-radius: 8px; padding: 14px 16px;
+    border-left: 4px solid var(--platform-color, var(--primary));
+  }
+  .feature-card .head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .feature-card .title { font-weight: 600; font-size: 15px; color: var(--ink); }
+  .feature-card .oneliner { font-size: 13px; color: var(--gray); margin-bottom: 8px; }
+  .feature-card .why { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* Topic cards */
+  .topics { display: flex; flex-direction: column; gap: 10px; }
+  .topic-card {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .topic-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 12px; }
+  .topic-name { font-weight: 600; font-size: 15px; color: var(--ink); }
+  .topic-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .topic-count { font-size: 12px; color: var(--gray); background: #f1f5f9; padding: 2px 8px; border-radius: 4px; }
+  .topic-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.55; }
+  .platform-pill {
+    display: inline-block; font-size: 10px; padding: 2px 7px;
+    border-radius: 4px; color: #fff; font-weight: 500;
+  }
+
+  /* Colored content cards (wins / friction / suggestion / horizon) */
+  .card-list { display: flex; flex-direction: column; gap: 12px; }
+  .win-card {
+    background: var(--good-bg); border: 1px solid var(--good-border);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .win-card .title { font-weight: 600; font-size: 15px; color: var(--good-ink); margin-bottom: 6px; }
+  .win-card .desc  { font-size: 14px; color: #15803d; line-height: 1.55; }
+
+  .friction-card {
+    background: var(--warn-bg); border: 1px solid var(--warn-border);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .friction-card .title { font-weight: 600; font-size: 15px; color: var(--warn-ink); margin-bottom: 4px; }
+  .friction-card .desc  { font-size: 13px; color: #7f1d1d; margin-bottom: 8px; line-height: 1.55; }
+  .friction-card ul { margin-left: 18px; font-size: 13px; color: var(--ink-soft); }
+  .friction-card li { margin: 2px 0; }
+
+  .tip-card {
+    background: var(--tip-bg); border: 1px solid var(--tip-border);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .tip-card .title { font-weight: 600; font-size: 15px; color: var(--tip-ink); margin-bottom: 4px; }
+  .tip-card .desc  { font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 10px; }
+
+  .horizon-card {
+    background: var(--horizon-bg); border: 1px solid var(--horizon-border);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .horizon-card .title { font-weight: 600; font-size: 15px; color: var(--horizon-ink); margin-bottom: 4px; }
+  .horizon-card .desc  { font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 10px; }
+
+  /* Copyable prompt */
+  .copyable-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    margin-top: 8px; padding: 10px 12px;
+    background: #ffffff; border: 1px solid var(--line); border-radius: 6px;
+  }
+  .copyable-row code {
+    flex: 1; font-family: "SF Mono", Menlo, monospace; font-size: 12px;
+    color: var(--ink-soft); white-space: pre-wrap; word-break: break-word;
+    line-height: 1.55; background: transparent;
+  }
+  .copy-btn {
+    background: var(--line); border: none; border-radius: 4px;
+    padding: 4px 10px; font-size: 11px; cursor: pointer; color: var(--ink-soft);
+    flex-shrink: 0; font-family: inherit; transition: background 0.15s;
+  }
+  .copy-btn:hover { background: #cbd5e1; }
+  .copy-btn.copied { background: var(--good); color: #fff; }
+
+  /* Charts */
+  .chart { width: 100%; height: 280px; }
+  .chart-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .chart-card {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 8px; padding: 16px;
+  }
+  .chart-title { font-size: 12px; font-weight: 600; color: var(--gray); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+
+  /* Top conv table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); }
+  th { color: var(--gray); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: none; }
+  .platform-tag {
+    display: inline-block; font-size: 10px; padding: 2px 7px;
+    border-radius: 4px; color: #fff; margin-right: 6px; vertical-align: middle;
+    font-weight: 500;
+  }
+
+  /* Fun ending */
+  .fun-ending {
+    background: var(--glance-bg);
+    border: 1px solid #fbbf24;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 40px;
+    text-align: center;
+  }
+  .fun-headline { font-size: 18px; font-weight: 600; color: var(--glance-ink); margin-bottom: 8px; line-height: 1.5; }
+  .fun-detail { font-size: 14px; color: var(--glance-title); }
+
+  /* Footer */
+  footer { color: var(--gray-soft); font-size: 12px; text-align: center; margin-top: 48px; }
+  footer a { color: var(--primary); text-decoration: none; }
+
+  @media (max-width: 720px) {
+    .stats-row { justify-content: space-around; gap: 18px; }
+    .chart-row { grid-template-columns: 1fr; }
+    .nav-toc { padding: 10px; }
+  }
+</style>
+</head>
+<body>
+<!-- Runner overlay：抓取/分析过程中显示，完成后隐藏 -->
+<div id="runner-overlay" hidden style="position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 24px;z-index:1000;box-shadow:0 2px 6px rgba(0,0,0,0.04)">
+  <div style="max-width:880px;margin:0 auto">
+    <div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:4px" id="runner-title">正在生成复盘报告…</div>
+    <div style="font-size:12px;color:#64748b" id="runner-status">准备中</div>
+    <div style="margin-top:8px;height:4px;background:#e2e8f0;border-radius:2px;overflow:hidden"><div id="runner-bar" style="height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed);width:0%;transition:width 0.3s"></div></div>
+    <style>
+      /* shimmer：进度条等待时来回扫的高光，不动数字也看得出是活的 */
+      #runner-bar.shimmer {
+        background: linear-gradient(90deg, #2563eb 0%, #2563eb 30%, #7c3aed 50%, #2563eb 70%, #2563eb 100%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s linear infinite;
+      }
+      @keyframes shimmer {
+        0%   { background-position: 200% 0; }
+        100% { background-position: -100% 0; }
+      }
+    </style>
+  </div>
+</div>
+
+<div class="wrap" id="report-root" hidden>
+
+<header>
+  <h1>AI 助手使用复盘</h1>
+  <div class="subtitle">{{FETCHED_AT}} · 覆盖平台：{{PLATFORM_LIST}} · 洞察由 {{LLM_PROVIDER}}/{{LLM_MODEL}} 生成</div>
+</header>
+
+<!-- At a Glance -->
+<div class="glance">
+  <div class="glance-title">速读 · 30 秒看完</div>
+  <div class="glance-sections">
+    <div class="glance-section"><strong>跑得通的用法：</strong>{{GLANCE_WORKING}} <a href="#section-wins" class="see-more">展开看 →</a></div>
+    <div class="glance-section"><strong>卡住你的地方：</strong>{{GLANCE_HINDERING}} <a href="#section-friction" class="see-more">展开看 →</a></div>
+    <div class="glance-section"><strong>现在就能改：</strong>{{GLANCE_QUICKWINS}} <a href="#section-suggestions" class="see-more">展开看 →</a></div>
+    <div class="glance-section"><strong>长期玩法：</strong>{{GLANCE_HORIZON}} <a href="#section-horizon" class="see-more">展开看 →</a></div>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="nav-toc">
+  <a href="#section-activity">活跃节奏</a>
+  <a href="#section-anomalies">数据彩蛋</a>
+  <a href="#section-narrative">你的使用画像</a>
+  <a href="#section-topics">主题归类</a>
+  <a href="#section-wins">做对的事</a>
+  <a href="#section-friction">出错的地方</a>
+  <a href="#section-suggestions">立刻试试</a>
+  <a href="#section-features">值得试的功能</a>
+  <a href="#section-horizon">工作流改造</a>
+</nav>
+
+<!-- Stats row -->
+<div class="stats-row">
+  <div class="stat"><div class="stat-value">{{KPI_N_CONV}}</div><div class="stat-label">对话</div></div>
+  <div class="stat"><div class="stat-value">{{KPI_N_MSG}}</div><div class="stat-label">消息</div></div>
+  <div class="stat"><div class="stat-value">{{KPI_N_ACTIVE_DAYS}}</div><div class="stat-label">活跃日</div></div>
+  <div class="stat"><div class="stat-value">{{KPI_SPAN_DAYS}}</div><div class="stat-label">跨度（天）</div></div>
+  <div class="stat"><div class="stat-value">{{REFUSE_RATE}}<span style="font-size:14px;color:var(--gray)">%</span></div><div class="stat-label">拒答率</div></div>
+</div>
+
+<!-- 活跃节奏（含平台对比 + 时段图表） -->
+<section id="section-activity">
+  <h2>活跃节奏</h2>
+  <p class="section-intro">{{KPI_FIRST_DATE}} ~ {{KPI_LAST_DATE}} · 跨 {{KPI_SPAN_DAYS}} 天 · 活跃 {{KPI_N_ACTIVE_DAYS}} 天</p>
+  <div class="platform-grid">{{PLATFORM_CARDS}}</div>
+
+  <div class="chart-card" style="margin-top:16px;margin-bottom:16px">
+    <div class="chart-title">最近 90 天活跃（按平台堆叠）</div>
+    <div id="chart-timeline" class="chart"></div>
+    <div style="color:var(--gray);font-size:12px;margin-top:8px">
+      90 天之前还有 {{TIMELINE_PRE90}} 条消息（最早 {{EARLIEST_DATE}}）
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:16px">
+    <div class="chart-title">Top 对话（消息数倒序）</div>
+    <div class="topn-mount">{{TOPN_TABLE}}</div>
+  </div>
+
+  <div class="chart-row">
+    <div class="chart-card">
+      <div class="chart-title">24×7 发消息热力图</div>
+      <div id="chart-heatmap" class="chart" style="height:240px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">消息按平台分布</div>
+      <div id="chart-platform" class="chart" style="height:240px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 数据彩蛋 / Anomaly highlights -->
+<section id="section-anomalies">
+  <h2>数据里的彩蛋</h2>
+  <div class="anomaly-grid">{{ANOMALY_CARDS}}</div>
+</section>
+
+<!-- 你的使用画像 -->
+<section id="section-narrative">
+  <h2>你的使用画像</h2>
+  <p class="section-intro">用一段话讲讲：你跟 AI 是怎么相处的。</p>
+  <div class="narrative-card">{{NARRATIVE_PARAGRAPHS}}{{NARRATIVE_KEY_PATTERN}}</div>
+</section>
+
+<!-- 主题归类 -->
+<section id="section-topics">
+  <h2>你都在用 AI 做什么 · 主题归类</h2>
+  <div class="topics">{{TOPIC_CARDS}}</div>
+</section>
+
+<!-- 你做对的事 -->
+<section id="section-wins">
+  <h2>你做对的事</h2>
+  <p class="section-intro">这些用法走得通，值得继续保持。</p>
+  <div class="card-list">{{WIN_CARDS}}</div>
+</section>
+
+<!-- 出错的地方 -->
+<section id="section-friction">
+  <h2>出错的地方</h2>
+  <p class="section-intro">混合了「平台的锅」和「你自己的锅」，对症下药。</p>
+  <div class="card-list">{{FRICTION_CARDS}}</div>
+</section>
+
+<!-- 立刻可以试的动作 -->
+<section id="section-suggestions">
+  <h2>立刻可以试的动作</h2>
+  <div class="card-list">{{SUGGESTION_CARDS}}</div>
+</section>
+
+<!-- 值得试的功能 -->
+<section id="section-features">
+  <h2>值得试的功能</h2>
+  <p class="section-intro">这些平台还有些你没怎么用过的能力，结合你的对话场景挑了几个。</p>
+  <div class="card-list">{{FEATURE_CARDS}}</div>
+</section>
+
+<!-- 工作流大改造 -->
+<section id="section-horizon">
+  <h2>工作流大改造</h2>
+  <p class="section-intro">不是这周就要改，但值得朝这个方向走。</p>
+  <div class="card-list">{{HORIZON_CARDS}}</div>
+</section>
+
+
+<!-- Fun ending -->
+<div class="fun-ending">
+  <div class="fun-headline">{{FUN_HEADLINE}}</div>
+  <div class="fun-detail">{{FUN_DETAIL}}</div>
+</div>
+
+<footer>
+  generated by <a href="https://github.com/qichuan-zqc/doubao-insights" target="_blank">ai-insights</a>
+</footer>
+
+</div><!-- /#report-root -->
+
+<script src="viewer-charts.js"></script>
+<script type="module" src="viewer.js"></script>
+</body>
+</html>

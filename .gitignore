@@ -1,0 +1,35 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Dev artifacts
+__pycache__/
+*.pyc
+node_modules/
+.cache/
+
+# 用户私人数据（理论上不会进 repo，但保险起见全屏蔽）
+data/
+*.har
+cookie*.txt
+cookies/
+
+# 临时/调试输出
+*.log
+*.tmp
+.tmp/
+build/
+dist/
+*.zip
+*.crx
+
+# 测试 / playwright
+test-results/
+playwright-report/

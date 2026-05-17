@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>AI 使用复盘</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>AI 使用复盘</h1>
+    <div class="subtitle">读你和大模型的对话，生成复盘报告</div>
+  </header>
+
+  <div class="platforms">
+    <div class="plat-row" id="row-doubao">
+      <span class="dot" style="background:#2563eb"></span>
+      <span class="name">豆包 <span class="domain">doubao.com</span></span>
+      <label class="override"><input type="checkbox" id="force-doubao"><span class="status" id="status-doubao">检测中…</span></label>
+    </div>
+    <div class="plat-row" id="row-yuanbao">
+      <span class="dot" style="background:#f59e0b"></span>
+      <span class="name">元宝 <span class="domain">yuanbao.tencent.com</span></span>
+      <label class="override"><input type="checkbox" id="force-yuanbao"><span class="status" id="status-yuanbao">检测中…</span></label>
+    </div>
+    <div class="plat-row" id="row-qianwen">
+      <span class="dot" style="background:#7c3aed"></span>
+      <span class="name">通义千问 <span class="domain">qianwen.com</span></span>
+      <label class="override"><input type="checkbox" id="force-qianwen"><span class="status" id="status-qianwen">检测中…</span></label>
+    </div>
+    <div class="plat-row" id="row-deepseek">
+      <span class="dot" style="background:#10b981"></span>
+      <span class="name">DeepSeek <span class="domain">chat.deepseek.com</span></span>
+      <label class="override"><input type="checkbox" id="force-deepseek"><span class="status" id="status-deepseek">检测中…</span></label>
+    </div>
+  </div>
+  <button id="generate" class="primary" disabled>检测中…</button>
+
+  <button id="open-report" class="secondary" hidden>📊 打开最近一次报告</button>
+
+  <div class="hint" id="override-hint" hidden></div>
+
+  <div class="progress" id="progress" hidden>
+    <div class="bar"><div class="fill" id="progress-fill"></div></div>
+    <div class="text" id="progress-text">准备中…</div>
+  </div>
+
+  <div class="footer">
+    <a href="#" id="open-options">⚙ LLM 设置</a>
+    <span class="dot-sep">·</span>
+    <a href="https://github.com/qichuan-zqc/doubao-insights" target="_blank">源码</a>
+    <span class="dot-sep">·</span>
+    <a href="#" id="diagnose">诊断登录态</a>
+  </div>
+</div>
+<script type="module" src="popup.js"></script>
+</body>
+</html>

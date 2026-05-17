@@ -1,0 +1,73 @@
+{
+  "manifest_version": 3,
+  "name": "AI 使用复盘",
+  "version": "1.0.0",
+  "description": "读你和大模型的对话，生成复盘报告。本地跑，cookie 不外发。",
+  "author": "qichuan-zqc",
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI 使用复盘",
+    "default_icon": {
+      "16": "icons/16.png",
+      "48": "icons/48.png"
+    }
+  },
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "tabs",
+    "cookies",
+    "scripting",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "https://*.doubao.com/*",
+    "https://doubao.com/*",
+    "https://*.tencent.com/*",
+    "https://tencent.com/*",
+    "https://*.qianwen.com/*",
+    "https://qianwen.com/*",
+    "https://chat.deepseek.com/*",
+    "https://api.anthropic.com/*",
+    "https://api.openai.com/*",
+    "https://api.deepseek.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.doubao.com/*", "https://doubao.com/*"],
+      "js": ["content-doubao.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://yuanbao.tencent.com/*"],
+      "js": ["content-yuanbao.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.qianwen.com/*", "https://qianwen.com/*"],
+      "js": ["content-qianwen.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://chat.deepseek.com/*"],
+      "js": ["content-deepseek.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["report.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
